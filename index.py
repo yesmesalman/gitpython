@@ -1,17 +1,21 @@
 from git import Repo
-import ftplib
-repo = Repo('./')
+import gitpython_script.env as env
+import gitpython_script.index as func
+import sys
+
+repo = Repo(env.REPO_DIR)
 
 
-def print_repository(repo):
-    # print('Repo description: {}'. format(repo.description))
-    print('Active repo branch is {}'. format(repo.active_branch))
-    for remote in repo.remotes:
-        print('Remote named "{}" with URL "{}"'.format(remote, remote.url))
+if func.check_repository(repo) == False:
+    print("repo doesn't exists.")
+    sys.exit()
+
+
+print("repo '"+ func.get_repository_name(repo) +"' added \n")
+
+
+func.get_changed_files(repo)
 
 
 
-if not repo.bare:
-    # print_repository(repo)
-    diff = repo.untracked_files
-    print(diff)
+sys.exit()
