@@ -14,9 +14,13 @@ def get_repository_name(repo):
     return repo_name
 
 
-def get_changed_files(repo):
+def print_changed_files(repo):
     for item in repo.index.diff(None):
-        print(item.a_path)
+        print(get_status(repo, item.a_path)+': '+item.a_path)
+
+
+def get_changed_files(repo):
+    return [ item.a_path for item in repo.index.diff(None) ]
 
 
 def get_status(repo, path):
