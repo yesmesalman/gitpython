@@ -1,31 +1,30 @@
 from git import Repo
-from ftplib import FTP_TLS
+from ftplib import FTP
 import gitpython_script.env as env
 import gitpython_script.index as func
 import sys
-
 repo = Repo(env.REPO_DIR)
 
-try:
-    ftp = FTP_TLS(env.REMOTE_SERVER_HOST)
-    ftp.sendcmd('USER '+env.REMOTE_SERVER_USERNAME) # '331 Please specify the password.'
-    ftp.sendcmd('PASS '+env.REMOTE_SERVER_PASSWORD)
 
-    # ftp.storbinary('STOR '+env.REMOTE_SERVER_DIR+'index.py', open('gitpython_script/index.py', 'rb'))
+# FTP Connection
+try:
+    ftp = FTP(env.REMOTE_SERVER_HOST, env.REMOTE_SERVER_USERNAME, env.REMOTE_SERVER_PASSWORD)
 
 except IOError as e:
     print('unable to login with ftp, Please try changing remote FTP credentials.')
     sys.exit()
 
-
+# Repo
 if func.check_repository(repo) == False:
     print("repo doesn't exists.")
     sys.exit()
 
-
 print("repo '"+ func.get_repository_name(repo) +"' added \n")
-print(func.get_changed_files(repo))
 
 
+# Upload changed files
+func.upload_all_files(ftp, func.get_changed_files(repo))
 
-# sys.exit()
+
+# End
+sys.exit()
